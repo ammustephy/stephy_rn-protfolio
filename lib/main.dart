@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'dart:html' as html;
+import 'dart:ui_web' as ui_web;
+
+import 'package:lottie/lottie.dart';
 
 void main() {
   usePathUrlStrategy(); // removes the '#'
@@ -101,13 +104,15 @@ Widget _platformsContent() {
         children: [
           'Flutter',
           'Dart',
+          'Quality Analyst (QA)',
           'Manual Testing',
           'Selenium',
           'Firebase',
           'Core Java',
           'HTML',
-          'AAQC',
-          'Coding Conversion',
+          'American Association Quality Control (AAQC)',
+          'Coding Conversion (CC)',
+          'Docx Pre-editing',
           'XML Correction',
         ]
             .map((skill) => ElevatedButton(
@@ -517,23 +522,59 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
       key: portfolioKey,
       color: Colors.black,
       constraints: BoxConstraints(minHeight: isWide ? 600 : 400),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: isWide ? 100 : 40),
-      child: isWide
-          ? Row(
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: isWide ? 10 : 10),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: Image.asset('assets/images/laptop.jpg', height: 500, fit: BoxFit.contain)),
+          Expanded(
+            child: Lottie.asset(
+              'Assets/Animation/openlaptop.json', // ensure this path is correct
+              height: 700,
+              fit: BoxFit.contain,
+              repeat: true,
+              animate: true,
+            ),
+          ),
           const SizedBox(width: 40),
           Expanded(child: _platformsContent()),
         ],
-      )
-          : Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/laptop.jpg', height: 300, fit: BoxFit.contain),
-          const SizedBox(height: 20),
-          _platformsContent(),
-        ],
+      ),
+    );
+  }
+
+  Widget buildCard(Map<String, String> p) {
+    return Card(
+      color: Colors.grey[900],
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {},
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 120,
+              width: double.infinity,
+              child: Image.asset(p['image']!, fit: BoxFit.cover),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(p['title']!, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
+                  Text(
+                    p['description']!,
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -565,7 +606,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
     return Container(
       key: worksKey,
       color: Colors.black,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 150),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -575,58 +616,30 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 40),
-          LayoutBuilder(builder: (ctx, cons) {
-            final count = (cons.maxWidth ~/ 200).clamp(1, 4);
-            return GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: count,
-                mainAxisSpacing: 40,
-                crossAxisSpacing: 40,
-                childAspectRatio: 1,
+      LayoutBuilder(builder: (ctx, cons) {
+        final count = (cons.maxWidth ~/ 200).clamp(1, 4);
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: count,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 20,
+            mainAxisExtent: 250, // reduce height from 300 to 250
+          ),
+          itemCount: projects.length,
+          itemBuilder: (c, i) {
+            final p = projects[i];
+            return Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 300), // limit card width
+                child: buildCard(p),
               ),
-              itemCount: projects.length,
-              itemBuilder: (c, i) {
-                final p = projects[i];
-                return Card(
-                  color: Colors.grey[900],
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    onTap: () {},
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Image.asset(p['image']!, width: double.infinity, fit: BoxFit.cover),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                p['title']!,
-                                style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 6),
-                              Text(
-                                p['description']!,
-                                style: TextStyle(color: Colors.white70, fontSize: 13),
-                                maxLines: 5,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
             );
-          }),
+          },
+        );
+      }
+      )
         ],
       ),
     );
@@ -638,17 +651,23 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
     return Container(
       key: aboutKey,
       color: Colors.black,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 140),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
       child: Column(
         children: [
           Text('About Me', style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 40),
+          const SizedBox(height: 80),
           if (isWide)
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(child: _experienceColumn()),
-                const SizedBox(width: 40),
+                Lottie.asset('Assets/Animation/LaptopAnime.json',
+                  height: 400,
+                  width: 500,
+                  fit: BoxFit.contain,
+                  repeat: true,
+                  animate: true,),
+                // const SizedBox(width: 40),
                 Expanded(child: _educationColumn()),
               ],
             )

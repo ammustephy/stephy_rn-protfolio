@@ -9,6 +9,8 @@ import 'dart:ui_web' as ui_web;
 
 import 'package:lottie/lottie.dart';
 
+////////MAIN FUNCTION///////////////////////////////////////////////
+
 void main() {
   usePathUrlStrategy(); // removes the '#'
   runApp(MyApp());
@@ -24,6 +26,8 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+////////////////SPLASH///////////////////////////////////////////////////////////////
 
 class MyPortfolioSplash extends StatefulWidget {
   @override
@@ -59,6 +63,33 @@ class _MyPortfolioSplashState extends State<MyPortfolioSplash> {
   }
 }
 
+
+class HoverJumpCard extends StatefulWidget {
+  final Widget child;
+
+  const HoverJumpCard({required this.child, Key? key}) : super(key: key);
+
+  @override
+  _HoverJumpCardState createState() => _HoverJumpCardState();
+}
+
+class _HoverJumpCardState extends State<HoverJumpCard> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.translationValues(0, _hover ? -8 : 0, 0),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
 void downloadResumeWeb(String url, String filename) {
   final anchor = html.AnchorElement(href: url)
     ..download = filename
@@ -66,6 +97,39 @@ void downloadResumeWeb(String url, String filename) {
   html.document.body!.append(anchor);
   anchor.click();
   anchor.remove();
+}
+
+
+class _JumpingSkillButton extends StatefulWidget {
+  final String label;
+
+  const _JumpingSkillButton({required this.label});
+
+  @override
+  __JumpingSkillButtonState createState() => __JumpingSkillButtonState();
+}
+
+class __JumpingSkillButtonState extends State<_JumpingSkillButton> {
+  bool _isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering = true),
+      onExit: (_) => setState(() => _isHovering = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.translationValues(0, _isHovering ? -6 : 0, 0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: _isHovering ? 8 : 4,
+          ),
+          onPressed: () { /* handle click */ },
+          child: Text(widget.label),
+        ),
+      ),
+    );
+  }
 }
 
 Widget _platformsContent() {
@@ -86,10 +150,10 @@ Widget _platformsContent() {
         spacing: 16,
         runSpacing: 16,
         children: [
-          _platformButton(Icons.android, 'Android'),
-          _platformButton(Icons.apple, 'iOS'),
-          _platformButton(Icons.language, 'Web'),
-          _platformButton(Icons.desktop_windows, 'Desktop'),
+          _platformButton(icon: Icons.android, label: 'Android', onPressed: () { /* ... */ }),
+          _platformButton(icon:Icons.apple, label: 'iOS',onPressed: () { /* ... */ }),
+          _platformButton(icon:Icons.language, label: 'Web',onPressed: () { /* ... */ }),
+          _platformButton(icon:Icons.desktop_windows, label: 'Desktop',onPressed: () { /* ... */ }),
         ],
       ),
       SizedBox(height: 30),
@@ -114,12 +178,9 @@ Widget _platformsContent() {
           'Coding Conversion (CC)',
           'Docx Pre-editing',
           'XML Correction',
-        ]
-            .map((skill) => ElevatedButton(
-          onPressed: () {},
-          child: Text(skill),
-        ))
-            .toList(),
+        ].map((skill) {
+          return _JumpingSkillButton(label: skill);
+        }).toList(),
       ),
       SizedBox(height: 100,),
       Center(
@@ -359,23 +420,50 @@ class __ContactFormState extends State<_ContactForm> {
 
 
 
-Widget _platformButton(IconData icon, String label) {
-  return TextButton.icon(
-    onPressed: () {},
-    icon: Icon(icon, color: Colors.white),
-    label: Text(label, style: TextStyle(color: Colors.white)),
-    style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(Colors.indigo.shade900),
-      foregroundColor: MaterialStateProperty.resolveWith(
-            (states) =>
-        states.contains(MaterialState.pressed) ? Colors.indigo : Colors.white,
-      ),
-      padding: MaterialStateProperty.all(
-        EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-    ),
-  );
+class _platformButton extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  const _platformButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  __platformButtonState createState() => __platformButtonState();
 }
+
+class __platformButtonState extends State<_platformButton> {
+  bool _hover = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: Matrix4.translationValues(0, _hover ? -8 : 0, 0),
+        child: TextButton.icon(
+          onPressed: widget.onPressed,
+          icon: Icon(widget.icon, color: Colors.white),
+          label: Text(widget.label, style: const TextStyle(color: Colors.white)),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.indigo.shade900),
+            padding: MaterialStateProperty.all(
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+////////////////////////////////HOME PAGE////////////////////////////////////////////////////
 
 class MyPortfolioHome extends StatefulWidget {
   @override
@@ -397,11 +485,43 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
     }
   }
 
-  Widget _navButton(String label, GlobalKey key) =>
-      TextButton(
-        onPressed: () => scrollTo(key),
-        child: Text(label, style: TextStyle(color: Colors.white)),
-      );
+  Map<GlobalKey, bool> _isHovering = {};
+  Map<GlobalKey, bool> _isPressing = {};
+
+  Widget _navButton(String label, GlobalKey key) {
+    _isHovering.putIfAbsent(key, () => false);
+    _isPressing.putIfAbsent(key, () => false);
+
+    double scale = _isPressing[key]! ? 0.95 : (_isHovering[key]! ? 1.1 : 1.0);
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovering[key] = true),
+      onExit: (_) => setState(() => _isHovering[key] = false),
+      child: GestureDetector(
+        onTap: () => scrollTo(key),
+        onTapDown: (_) => setState(() => _isPressing[key] = true),
+        onTapUp: (_) => setState(() => _isPressing[key] = false),
+        onTapCancel: () => setState(() => _isPressing[key] = false),
+        child: AnimatedScale(
+          scale: scale,
+          duration: const Duration(milliseconds: 100),
+          child: AnimatedContainer(
+            padding: EdgeInsets.only(bottom: _isHovering[key]! ? 6 : 2),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: _isHovering[key]! ? Colors.indigo.shade900 : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+            ),
+            duration: const Duration(milliseconds: 150),
+            child: Text(label, style: TextStyle(color: Colors.white)),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -417,9 +537,13 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
         title: Text('Stephy RN', style: TextStyle(color: Colors.white)),
         actions: [
           _navButton('Home', homeKey),
+          SizedBox(width: 12,),
           _navButton('Portfolio', portfolioKey),
+          SizedBox(width: 12,),
           _navButton('Works', worksKey),
+          SizedBox(width: 12,),
           _navButton('About', aboutKey),
+          SizedBox(width: 12,),
           ElevatedButton(
             onPressed: () => scrollTo(contactKey),
             style: ElevatedButton.styleFrom(
@@ -516,6 +640,8 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
   }
 
 
+  //////////////////////PORTFOLIO SECTION////////////////////////////////////////
+
   Widget _responsivePortfolio(double w) {
     final isWide = w > 900;
     return Container(
@@ -541,6 +667,8 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
       ),
     );
   }
+
+  /////////////////////////WORKS & PROJECTS///////////////////////////////////////
 
   Widget buildCard(Map<String, String> p) {
     return Card(
@@ -625,15 +753,15 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
             crossAxisCount: count,
             mainAxisSpacing: 20,
             crossAxisSpacing: 20,
-            mainAxisExtent: 250, // reduce height from 300 to 250
+            mainAxisExtent: 250,
           ),
           itemCount: projects.length,
-          itemBuilder: (c, i) {
-            final p = projects[i];
+          itemBuilder: (context, index) {
+            final p = projects[index];
             return Center(
               child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 300), // limit card width
-                child: buildCard(p),
+                constraints: BoxConstraints(maxWidth: 300),
+                child: HoverJumpCard(child: buildCard(p)),
               ),
             );
           },
@@ -644,6 +772,9 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
       ),
     );
   }
+
+
+//////////////////////////////////ABOUT ME SECTION///////////////////////////////////////////////
 
 
   Widget _responsiveAbout(double w) {
@@ -684,6 +815,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
     );
   }
 
+////////////////////////////////CONTACT & GRT IN TOUCH SECTION////////////////////////////
 
   Widget _contactSection() {
     return LayoutBuilder(builder: (ctx, constraints) {

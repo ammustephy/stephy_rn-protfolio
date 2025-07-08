@@ -8,6 +8,7 @@ import 'dart:html' as html;
 import 'dart:ui_web' as ui_web;
 
 import 'package:lottie/lottie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 ////////MAIN FUNCTION///////////////////////////////////////////////
 
@@ -136,6 +137,7 @@ Widget _platformsContent() {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
+      SizedBox(height: 30),
       Text(
         'What I can do',
         style: TextStyle(color: Colors.white, fontSize: 32),
@@ -145,7 +147,7 @@ Widget _platformsContent() {
         'Platforms I Build For',
         style: TextStyle(color: Colors.white, fontSize: 25),
       ),
-      SizedBox(height: 30),
+      SizedBox(height: 20),
       Wrap(
         spacing: 16,
         runSpacing: 16,
@@ -156,7 +158,7 @@ Widget _platformsContent() {
           _platformButton(icon:Icons.desktop_windows, label: 'Desktop',onPressed: () { /* ... */ }),
         ],
       ),
-      SizedBox(height: 30),
+      SizedBox(height: 40),
       Text(
         'My Skills',
         style: TextStyle(color: Colors.white, fontSize: 22),
@@ -168,16 +170,17 @@ Widget _platformsContent() {
         children: [
           'Flutter',
           'Dart',
+          'REST API',
           'Quality Analyst (QA)',
           'Manual Testing',
           'Selenium',
           'Firebase',
           'Core Java',
           'HTML',
-          'American Association Quality Control (AAQC)',
           'Coding Conversion (CC)',
           'Docx Pre-editing',
           'XML Correction',
+          'American Association Quality Control (AAQC)',
         ].map((skill) {
           return _JumpingSkillButton(label: skill);
         }).toList(),
@@ -223,7 +226,7 @@ Widget _experienceColumn() {
       // crossAxisAlignment: CrossAxisAlignment.start,
       // mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text('My Experience',
+        Text('Experience',
             style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
         SizedBox(height: 20),
         _experienceTile('Junior Flutter Developer', 'Kefi Tech Solutions Pvt Ltd • Jun 2025–Present'),
@@ -328,10 +331,10 @@ class __ContactFormState extends State<_ContactForm> {
       key: _formKey,
       child: Column(
         children: [
-          Text('Contact Me',
-            style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
+          // Text('Contact Me',
+          //   style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+          //   textAlign: TextAlign.center,
+          // ),
           SizedBox(height: 24),
           if (widget.isWide)
             Row(
@@ -851,17 +854,55 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
     });
   }
 
+  Future<void> _launchInstagramProfile(String username) async {
+    final nativeUrl = Uri.parse('instagram://user?username=$username');
+    final webUrl    = Uri.parse('https://instagram.com/$username/');
+
+    if (await canLaunchUrl(nativeUrl)) {
+      await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
+    } else if (await canLaunchUrl(webUrl)) {
+      await launchUrl(webUrl, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not open Instagram profile");
+    }
+  }
+
+  Future<void> _launchFacebookProfile(String username) async {
+    final nativeUrl = Uri.parse('facebook://user?username=$username');
+    final webUrl    = Uri.parse('https://www.facebook.com/$username/');
+
+    if (await canLaunchUrl(nativeUrl)) {
+      await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
+    } else if (await canLaunchUrl(webUrl)) {
+      await launchUrl(webUrl, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not open Facebook profile");
+    }
+  }
+
+  Future<void> _launchLinkedInProfile(String username) async {
+    final nativeUrl = Uri.parse('Linkedin://user?username=$username');
+    final webUrl    = Uri.parse('https://www.linkedin.com/$username/');
+
+    if (await canLaunchUrl(nativeUrl)) {
+      await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
+    } else if (await canLaunchUrl(webUrl)) {
+      await launchUrl(webUrl, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not open Linked in profile");
+    }
+  }
+
   Widget _contactDetails() {
+    const igUsername = 'your_username';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Get in Touch', style: TextStyle(
-            color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
+        Text('Get in Touch', style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold)),
         SizedBox(height: 24),
-        // Your details...
         Text('📍 Location', style: TextStyle(color: Colors.white70)),
-        Text('Thiruvananthapuram, Kerala, India',
-            style: TextStyle(color: Colors.white)),
+        Text('Thiruvananthapuram, Kerala, India', style: TextStyle(color: Colors.white)),
         SizedBox(height: 16),
         Text('✉️ Email', style: TextStyle(color: Colors.white70)),
         Text('ammustephy.as@gmail.com', style: TextStyle(color: Colors.white)),
@@ -869,9 +910,58 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
         Text('📞 Phone', style: TextStyle(color: Colors.white70)),
         Text('+91 7907761417', style: TextStyle(color: Colors.white)),
         SizedBox(height: 24),
-        Text(
-            'Feel free to reach out for collaborations, freelance work, or just a friendly hello!',
-            style: TextStyle(color: Colors.white70)),
+        Text('Feel free to reach out for collaborations, freelance work, or just a friendly hello!',
+          style: TextStyle(color: Colors.white70),
+        ),
+        SizedBox(height: 15),
+        Row(
+          children: [
+            GestureDetector(
+              onTap: () => _launchInstagramProfile('your_username'),
+              child: Text.rich(
+                TextSpan(
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  children: [
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Lottie.asset('Assets/Animation/Instagram.json', width: 70, height: 70),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            GestureDetector(
+              onTap: () => _launchFacebookProfile('your_username'),
+              child: Text.rich(
+                TextSpan(
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  children: [
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Lottie.asset('Assets/Animation/Facebook.json', width: 70, height: 70),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            GestureDetector(
+              onTap: () => _launchLinkedInProfile('your_username'),
+              child: Text.rich(
+                TextSpan(
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                  children: [
+                    WidgetSpan(
+                      alignment: PlaceholderAlignment.middle,
+                      child: Lottie.asset('Assets/Animation/Linkedin.json', width: 70, height: 70),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }

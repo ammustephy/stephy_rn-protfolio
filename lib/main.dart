@@ -229,9 +229,9 @@ Widget _experienceColumn() {
         Text('Experience',
             style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
         SizedBox(height: 20),
-        _experienceTile('Junior Flutter Developer', 'Kefi Tech Solutions Pvt Ltd • Jun 2025–Present'),
+        _experienceTile('Junior Flutter Developer', 'Kefi Tech Solutions Pvt Ltd • Jun 2025–Present'),
         SizedBox(height: 12),
-        _experienceTile('Electronic Quality Controller', 'Aptara Learnings Pvt Ltd • Mar 2021–Jun 2025'),
+        _experienceTile('Electronic Quality Controller', 'Aptara Learnings Pvt Ltd • Mar 2021–Jun 2025'),
       ],
     ),
   );
@@ -865,7 +865,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
 
   Future<void> _launchInstagramProfile(String username) async {
     final nativeUrl = Uri.parse('instagram://user?username=$username');
-    final webUrl    = Uri.parse('https://instagram.com/$username/');
+    final webUrl    = Uri.parse('https://www.instagram.com/stephy_rn/?next=%2F&hl=en/');
 
     if (await canLaunchUrl(nativeUrl)) {
       await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
@@ -878,7 +878,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
 
   Future<void> _launchFacebookProfile(String username) async {
     final nativeUrl = Uri.parse('facebook://user?username=$username');
-    final webUrl    = Uri.parse('https://www.facebook.com/$username/');
+    final webUrl    = Uri.parse('https://www.facebook.com/profile.php?id=100004198426815/');
 
     if (await canLaunchUrl(nativeUrl)) {
       await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
@@ -891,7 +891,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
 
   Future<void> _launchLinkedInProfile(String username) async {
     final nativeUrl = Uri.parse('Linkedin://user?username=$username');
-    final webUrl    = Uri.parse('https://www.linkedin.com/$username/');
+    final webUrl    = Uri.parse('https://www.linkedin.com/in/stephy-rn/');
 
     if (await canLaunchUrl(nativeUrl)) {
       await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);

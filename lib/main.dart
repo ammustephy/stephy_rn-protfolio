@@ -633,18 +633,11 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome> {
           minHeight: 0,
           maxWidth: double.infinity,
           maxHeight: double.infinity,
-          child: Lottie.asset(
+          child:
+          Lottie.asset(
             'assets/animation/Blocks loading.json',
             height: 300,
             width: 300,
-            // delegates: LottieDelegates(
-            //   values: [
-            //     ValueDelegate.color(
-            //       const ['**', 'wave_2 Outlines', '**'], // ** wildcard around the group name
-            //       value: Colors.red,
-            //     ),
-            //   ],
-            // ),
           )
         )
       ),

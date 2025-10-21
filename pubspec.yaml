@@ -80,6 +80,10 @@ flutter:
   assets:
     - Assets/Animation/
     - Assets/Images/
+    - Assets/Images/kdch/
+    - Assets/Images/stud/
+    - Assets/Images/news/
+    - Assets/Images/portfolio/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

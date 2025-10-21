@@ -1,4 +1,4 @@
-# my_protfolio
+# my_portfolio
 
 A new Flutter project.
 

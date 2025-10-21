@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "stephy_rn-portfolio",
+    "public": "build/web",
     "ignore": [
       "firebase.json",
       "**/.*",

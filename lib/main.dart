@@ -1,18 +1,133 @@
 import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jumping_dot/jumping_dot.dart';
 import 'web_functionality.dart'
     if (dart.library.html) 'web_functionality_web.dart';
+import 'webgl_globe_stub.dart'
+    if (dart.library.js_interop) 'webgl_globe_web.dart';
 
 import 'package:lottie/lottie.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+////////PROFILE DETAILS (kept the same as the resume)///////////////////
+
+const String kEmail = 'mail2stephyrn@gmail.com';
+const String kPhone = '+91 7907761417';
+const String kGitHubUrl = 'https://github.com/ammustephy?tab=repositories';
+const String kLinkedInUrl = 'https://www.linkedin.com/in/stephy-rn/';
+const String kResumePath =
+    'assets/Assets/Resume/Stephy_RN_Flutter_Developer_Resume.pdf';
+const String kResumeFileName = 'Stephy_RN_Flutter_Developer_Resume.pdf';
+
+const String kSummary =
+    'Flutter Developer with 1.5+ years of experience building cross-platform '
+    'mobile applications for Android and iOS using Flutter and Dart. Skilled in '
+    'REST API integration (Dio, HTTP), Firebase, state management (GetX, BLoC, '
+    'Provider), Clean Architecture and MVVM. Experienced in Google Maps and live '
+    'tracking, payment gateway integration, localization in English, French and '
+    'Arabic (RTL), Figma-to-Flutter UI development, Google Play Store releases '
+    'and AI-assisted development using Claude Code, Cursor and Antigravity.';
+
+const List<String> kSkills = [
+  'Flutter',
+  'Dart',
+  'JavaScript',
+  'GetX',
+  'BLoC',
+  'Provider',
+  'Clean Architecture',
+  'MVVM',
+  'RESTful APIs',
+  'Dio',
+  'HTTP',
+  'JSON',
+  'WebSocket',
+  'Firebase',
+  'Cloud Firestore',
+  'Hive',
+  'SQLite',
+  'MySQL',
+  'MongoDB',
+  'Google Maps',
+  'Geolocation & Live Tracking',
+  'Payment Gateway Integration',
+  'Localization (i18n) & RTL',
+  'Responsive UI',
+  'Node.js',
+  'Express.js',
+  'Git & GitHub',
+  'Figma',
+  'Postman',
+  'Android Studio',
+  'VS Code',
+  'Google Play Console',
+  'Claude Code',
+  'Cursor',
+  'Google Antigravity',
+];
+
+class _Job {
+  final String role;
+  final String company;
+  final String dates;
+  final List<String> points;
+  const _Job(this.role, this.company, this.dates, this.points);
+}
+
+const List<_Job> kJobs = [
+  _Job(
+    'Flutter Developer',
+    'Sigosoft Private Ltd., Kerala, India',
+    'January 2026 – Present',
+    [
+      'Develop and maintain multiple production Flutter applications for Android and iOS using Dart, GetX and Clean Architecture.',
+      'Built a multi-vendor delivery partner app supporting 9 business types (restaurant, grocery, pharmacy, local store, water, gas, laundry, car wash and home cleaning) from a single codebase.',
+      'Implemented localization (i18n) in English, French and Arabic, including full right-to-left (RTL) layout support.',
+      'Integrated RESTful APIs using Dio with token-based authentication and centralized error handling.',
+      'Implemented Google Maps, geolocation and real-time live order tracking.',
+      'Integrated payment gateways and secure payment processing workflows.',
+      'Converted Figma designs into responsive, pixel-accurate Flutter UI with reusable widgets.',
+      'Used AI coding tools (Claude Code, Cursor and Google Antigravity) in daily development for feature implementation, debugging, refactoring, code review and technical documentation, while reviewing and testing all AI-generated code before release.',
+      'Shipped 10+ releases to the Google Play Store, managing app versioning and release tracks in Google Play Console.',
+      'Followed a Git feature-branch and pull-request workflow on GitHub, and documented API issues for the backend team to speed up fixes.',
+    ],
+  ),
+  _Job(
+    'Associate Software Engineer – Flutter Application Development',
+    'Kefi Tech Solutions Pvt. Ltd., Kerala, India',
+    'June 2025 – December 2025',
+    [
+      'Developed hospital management and attendance management applications using Flutter and Dart.',
+      'Integrated RESTful APIs using the HTTP package and parsed JSON responses into model classes.',
+      'Implemented state management using Provider and BLoC for maintainable, testable code.',
+      'Designed responsive UI with reusable custom widgets for multiple screen sizes.',
+      'Tested and debugged APIs using Postman before integration.',
+    ],
+  ),
+  _Job(
+    'Electronic Quality Controller',
+    'Aptara Learnings Pvt. Ltd., Kerala, India',
+    'March 2021 – June 2025',
+    [
+      'Converted DOCX documents to structured XML and validated output against quality assurance standards.',
+      'Maintained high accuracy and consistency across deliverables and contributed to process improvements.',
+    ],
+  ),
+];
+
 ////////MAIN FUNCTION///////////////////////////////////////////////
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   configureApp();
+  // Puts the page text into the HTML so search engines, screen readers and
+  // recruiters' tools can read it (Flutter web otherwise only draws pixels).
+  if (kIsWeb) SemanticsBinding.instance.ensureSemantics();
   runApp(MyApp());
 }
 
@@ -22,7 +137,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Portfolio',
+      title: 'Stephy R N | Flutter Developer',
       debugShowCheckedModeBanner: false,
       home: MyPortfolioSplash(),
     );
@@ -198,66 +313,27 @@ Widget _platformsContent(BuildContext context) {
       Wrap(
         spacing: isMobile ? 8 : 15,
         runSpacing: isMobile ? 8 : 15,
-        children: [
-          'Flutter',
-          'Dart',
-          'REST API Integration',
-          'Node.js',
-          'Express.js',
-          'Firebase',
-          'MongoDB',
-          'MySQL',
-          'Websocket',
-          'Play Store Deployment',
-          'Maps Integration',
-          'Provider',
-          'BLoC',
-          'GetX',
-          'Manual Testing',
-          'Coding Conversion (CC)',
-          'American Association Quality Control (AAQC)',
-        ].map((skill) {
+        children: kSkills.map((skill) {
           return _JumpingSkillButton(label: skill);
         }).toList(),
       ),
       SizedBox(height: isMobile ? 40 : 100),
       Center(
-        child: isMobile
-            ? Column(
-                children: [
-                  _buildResumeButton(
-                    label: 'Download Resume',
-                    onPressed: () => downloadResume(
-                      'Assets/Resume/STEPHY R.N-Flutter.pdf',
-                      'STEPHY R.N-Flutter.pdf',
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  _buildResumeButton(
-                    label: 'View Resume',
-                    onPressed: () =>
-                        viewResume('Assets/Resume/STEPHY R.N-FLR.pdf'),
-                  ),
-                ],
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildResumeButton(
-                    label: 'Download Resume',
-                    onPressed: () => downloadResume(
-                      'Assets/Resume/STEPHY R.N-FLR.pdf',
-                      'STEPHY R.N-FLR.pdf',
-                    ),
-                  ),
-                  SizedBox(width: 12),
-                  _buildResumeButton(
-                    label: 'View Resume',
-                    onPressed: () =>
-                        viewResume('Assets/Resume/STEPHY R.N-FLR.pdf'),
-                  ),
-                ],
-              ),
+        child: Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          alignment: WrapAlignment.center,
+          children: [
+            _buildResumeButton(
+              label: 'Download Resume',
+              onPressed: () => downloadResume(kResumePath, kResumeFileName),
+            ),
+            _buildResumeButton(
+              label: 'View Resume',
+              onPressed: () => viewResume(kResumePath),
+            ),
+          ],
+        ),
       ),
     ],
   );
@@ -307,32 +383,26 @@ Widget _experienceColumn(BuildContext context) {
           ),
         ),
         SizedBox(height: isMobile ? 15 : 20),
-        _experienceTile(
-          'Flutter Developer',
-          'Sigosoft Solutions Pvt Ltd • Jan 2026 – Present',
-          context,
-        ),
-        SizedBox(height: 12),
-        _experienceTile(
-          'Associate Flutter Developer',
-          'Kefi Tech Solutions Pvt Ltd • Jun 2025 – Dec 2025',
-          context,
-        ),
-        SizedBox(height: 12),
-        _experienceTile(
-          'Electronic Quality Controller',
-          'Aptara Learnings Pvt Ltd • Mar 2021 – Jun 2025',
-          context,
-        ),
+        for (final job in kJobs) ...[
+          _experienceTile(
+            job.role,
+            '${job.company} • ${job.dates}',
+            context,
+            points: job.points,
+          ),
+          SizedBox(height: 12),
+        ],
       ],
     ),
   );
 }
 
-Widget _experienceTile(String role, String org, BuildContext context) {
+Widget _experienceTile(String role, String org, BuildContext context,
+    {List<String> points = const []}) {
   final isMobile = MediaQuery.of(context).size.width < 600;
 
   return Container(
+    width: double.infinity,
     decoration: BoxDecoration(
       gradient: LinearGradient(
         colors: [Colors.indigo.shade900, Colors.black],
@@ -361,6 +431,29 @@ Widget _experienceTile(String role, String org, BuildContext context) {
             fontSize: isMobile ? 13 : 15,
           ),
         ),
+        if (points.isNotEmpty) SizedBox(height: 10),
+        for (final point in points)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('•  ',
+                    style: TextStyle(
+                        color: Colors.white70, fontSize: isMobile ? 13 : 14)),
+                Expanded(
+                  child: Text(
+                    point,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: isMobile ? 13 : 14,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
       ],
     ),
   );
@@ -382,8 +475,8 @@ Widget _educationColumn(BuildContext context) {
         ),
         SizedBox(height: isMobile ? 15 : 20),
         _experienceTile(
-          'B.Tech. Computer Science & Engineering',
-          'Kerala University, CGPA: 7.0, 2021',
+          'Bachelor of Technology (B.Tech) in Computer Science',
+          'University of Kerala • 2021 • CGPA: 7.0 / 10',
           context,
         ),
         SizedBox(height: 12),
@@ -501,18 +594,36 @@ class __ContactFormState extends State<_ContactForm> {
         contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       );
 
-  void _submit() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Thanks $_name! Your message is sent.'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      _formKey.currentState!.reset();
-    }
+  // Opens the visitor's email app with the message filled in, addressed to me.
+  Future<void> _submit() async {
+    if (!_formKey.currentState!.validate()) return;
+    _formKey.currentState!.save();
+    final uri = Uri(
+      scheme: 'mailto',
+      path: kEmail,
+      query: _encodeQuery({
+        'subject': 'Portfolio enquiry from $_name',
+        'body': '$_message\n\nFrom: $_name ($_email)',
+      }),
+    );
+    final opened = await launchUrl(uri);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(opened
+            ? 'Your email app is open. Press send there to reach me.'
+            : 'Could not open an email app. Please write to $kEmail.'),
+        backgroundColor: opened ? Colors.indigo.shade900 : Colors.red.shade900,
+      ),
+    );
+    if (opened) _formKey.currentState!.reset();
   }
+
+  // mailto links need %20 for spaces, not "+".
+  String _encodeQuery(Map<String, String> params) => params.entries
+      .map((e) =>
+          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+      .join('&');
 }
 
 class _platformButton extends StatefulWidget {
@@ -754,27 +865,33 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
     final isTablet = w >= 600 && w < 900;
     final maxImageSide = isMobile ? w * 0.6 : (isTablet ? w * 0.4 : w * 0.35);
 
-    return Container(
+    return Stack(
       key: homeKey,
-      padding: EdgeInsets.symmetric(
-        vertical: isMobile ? 40 : 80,
-        horizontal: w * 0.07,
-      ),
-      child: isMobile || isTablet
-          ? Column(
-              children: [
-                _homeImage(maxImageSide),
-                SizedBox(height: 30),
-                _homeText(),
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(flex: 2, child: _homeText()),
-                SizedBox(width: 20),
-                Expanded(child: _homeImage(maxImageSide)),
-              ],
-            ),
+      children: [
+        // WebGL wireframe globe behind the photo (web only).
+        const Positioned.fill(child: WebGLGlobe()),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: isMobile ? 40 : 80,
+            horizontal: w * 0.07,
+          ),
+          child: isMobile || isTablet
+              ? Column(
+                  children: [
+                    _homeImage(maxImageSide),
+                    SizedBox(height: 30),
+                    _homeText(),
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(flex: 2, child: _homeText()),
+                    SizedBox(width: 20),
+                    Expanded(child: _homeImage(maxImageSide)),
+                  ],
+                ),
+        ),
+      ],
     );
   }
 
@@ -800,26 +917,61 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
             totalRepeatCount: 1,
           ),
         ),
-        SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () => scrollTo(contactKey),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.indigo.shade900,
-            padding: EdgeInsets.symmetric(
-              horizontal: isMobile ? 16 : 20,
-              vertical: isMobile ? 12 : 16,
-            ),
-          ),
+        SizedBox(height: 16),
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 560),
           child: Text(
-            'Get in Touch',
+            '1.5+ years building production Android and iOS apps with Flutter, '
+            'GetX, BLoC, REST APIs, Firebase, Google Maps and payment gateways.',
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.white70,
               fontSize: isMobile ? 14 : 16,
+              height: 1.5,
             ),
           ),
         ),
+        SizedBox(height: 24),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: [
+            _heroButton('View Projects', () => scrollTo(worksKey),
+                filled: true),
+            _heroButton('Download Resume',
+                () => downloadResume(kResumePath, kResumeFileName)),
+            _heroButton('Get in Touch', () => scrollTo(contactKey)),
+          ],
+        ),
       ],
     );
+  }
+
+  Widget _heroButton(String label, VoidCallback onPressed,
+      {bool filled = false}) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    final padding = EdgeInsets.symmetric(
+      horizontal: isMobile ? 16 : 20,
+      vertical: isMobile ? 12 : 16,
+    );
+    final text = Text(label,
+        style: TextStyle(color: Colors.white, fontSize: isMobile ? 14 : 16));
+    return filled
+        ? ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.indigo.shade900,
+              padding: padding,
+            ),
+            child: text,
+          )
+        : OutlinedButton(
+            onPressed: onPressed,
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: Colors.indigo.shade300),
+              padding: padding,
+            ),
+            child: text,
+          );
   }
 
   Widget _homeImage(double maxSide) {
@@ -927,7 +1079,21 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
             SizedBox(
               height: isMobile ? 100 : 120,
               width: double.infinity,
-              child: Image.asset(p['image']!, fit: BoxFit.cover),
+              child: p['image'] != null
+                  ? Image.asset(p['image']!, fit: BoxFit.cover)
+                  : DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.indigo.shade900, Colors.black],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(p['icon'] as IconData? ?? Icons.apps,
+                            color: Colors.white, size: 48),
+                      ),
+                    ),
             ),
             Padding(
               padding: EdgeInsets.all(isMobile ? 12 : 16),
@@ -967,6 +1133,25 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
     final isTablet = w >= 600 && w < 900;
 
     final projects = [
+      {
+        'title': 'Multi-Vendor Delivery Partner App',
+        'icon': Icons.delivery_dining,
+        'description':
+            'Production Flutter app for vendors across 9 business types, in English, French and Arabic.',
+        'fullDescription': 'A production Flutter app (Android and iOS) that vendors use to run their business on a multi-vendor delivery platform. One codebase serves 9 business types: restaurant, grocery, pharmacy, local store, water, gas, laundry, car wash and home cleaning. Each vendor type gets its own section, chosen by the server, while sharing the same design system and API layer. Built at Sigosoft Private Ltd.'
+            '\n\nKey Features:'
+            '\n• Vendor sections for 9 business types from a single codebase'
+            '\n• Full localization in English, French and Arabic, with right-to-left (RTL) layouts'
+            '\n• RESTful API integration using Dio with token-based authentication and centralized error handling'
+            '\n• Order management with Google Maps, geolocation and live order tracking'
+            '\n• Figma designs converted into responsive, reusable Flutter widgets'
+            '\n• 10+ releases shipped to the Google Play Store through Google Play Console'
+            '\n• Git feature-branch and pull-request workflow, with API issues documented for the backend team'
+            '\n• Tech Stack: Flutter, Dart, GetX, Clean Architecture, Dio, REST APIs, Google Maps, Firebase, Git',
+        'screenshots': <String>[],
+        'conclusion':
+            'This client app is the largest project I have worked on: one Flutter codebase serving many business types and three languages, including a right-to-left language. Screenshots are not shown because the app belongs to a client.',
+      },
       {
         'image': 'Assets/Images/wallflow/Login.jpg',
         'title': 'WallFlow',
@@ -1045,8 +1230,8 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
         'image': 'Assets/Images/portfolio/Home.png',
         'title': 'Portfolio',
         'description':
-            'Its My portfolio website is a sleek, professionally designed digital showcase...',
-        'fullDescription': 'Its My portfolio website is a sleek, professionally designed digital showcase that presents the work and capabilities of a talented Flutter developer based in Thiruvananthapuram, Kerala, India. This modern portfolio serves as a comprehensive platform for potential clients, collaborators, and employers to explore Stephy\'s technical expertise, professional journey, and project accomplishments. With its minimalist black-themed interface and intuitive navigation, the website effectively communicates Stephy\'s identity as a versatile cross-platform developer specializing in Flutter, while also highlighting a unique background that bridges both software development and quality assurance. The portfolio demonstrates not only technical proficiency across multiple platforms—Android, iOS, Web, and Desktop—but also showcases a diverse skill set that includes programming languages like Dart and Kotlin, API integration, quality assurance methodologies, and front-end development technologies.'
+            'My portfolio website is a sleek, professionally designed digital showcase...',
+        'fullDescription': 'My portfolio website is a sleek, professionally designed digital showcase that presents the work and capabilities of a talented Flutter developer based in Thiruvananthapuram, Kerala, India. This modern portfolio serves as a comprehensive platform for potential clients, collaborators, and employers to explore Stephy\'s technical expertise, professional journey, and project accomplishments. With its minimalist black-themed interface and intuitive navigation, the website effectively communicates Stephy\'s identity as a versatile cross-platform developer specializing in Flutter, while also highlighting a unique background that bridges both software development and quality assurance. The portfolio demonstrates not only technical proficiency across multiple platforms—Android, iOS, Web, and Desktop—but also showcases a diverse skill set that includes programming languages like Dart and Kotlin, API integration, quality assurance methodologies, and front-end development technologies.'
             '\n\nKey Features'
             '\n• Modern & Minimalist Design – Sleek black-themed interface with a clean and professional layout.'
             '\n• Responsive Cross-Platform UI – Optimized for desktop, tablet, and mobile devices to ensure a smooth browsing experience.'
@@ -1072,7 +1257,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
       },
       {
         'image': 'Assets/Images/HospitalManagement.jpg',
-        'title': 'Kdc_Hospitals',
+        'title': 'KDC Hospital Management',
         'description':
             'KDCH is a comprehensive mobile hospital management application designed...',
         'fullDescription': 'KDCH is a comprehensive mobile hospital management application designed to bridge the gap between patients and healthcare services. This all-in-one platform empowers patients with seamless access to medical records, appointment scheduling, prescription management, and hospital services directly from their smartphones. By digitizing traditional hospital interactions, KDCH eliminates the need for physical visits for routine tasks, reduces waiting times, and provides patients with greater control over their healthcare journey. The application features an intuitive interface with secure login, personalized profiles, and easy navigation, making quality healthcare access.'
@@ -1197,7 +1382,20 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: isMobile ? 40 : 80),
+          SizedBox(height: isMobile ? 20 : 30),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 900),
+            child: Text(
+              kSummary,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.white70,
+                fontSize: isMobile ? 14 : 16,
+                height: 1.6,
+              ),
+            ),
+          ),
+          SizedBox(height: isMobile ? 40 : 60),
           if (isMobile || isTablet)
             Column(
               children: [
@@ -1215,20 +1413,31 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
               ],
             )
           else
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: _experienceColumn(context)),
-                Lottie.asset(
-                  'Assets/Animation/LaptopAnime.json',
-                  height: 400,
-                  width: 500,
-                  fit: BoxFit.contain,
-                  repeat: true,
-                  animate: true,
-                ),
-                Expanded(child: _educationColumn(context)),
-              ],
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 1300),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(flex: 3, child: _experienceColumn(context)),
+                  SizedBox(width: 40),
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      children: [
+                        _educationColumn(context),
+                        SizedBox(height: 30),
+                        Lottie.asset(
+                          'Assets/Animation/LaptopAnime.json',
+                          height: 320,
+                          fit: BoxFit.contain,
+                          repeat: true,
+                          animate: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
         ],
       ),
@@ -1289,23 +1498,9 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
     }
   }
 
-  Future<void> _launchFacebookProfile(String username) async {
-    final nativeUrl = Uri.parse('facebook://user?username=$username');
-    final webUrl =
-        Uri.parse('https://www.facebook.com/profile.php?id=100004198426815/');
-
-    if (await canLaunchUrl(nativeUrl)) {
-      await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
-    } else if (await canLaunchUrl(webUrl)) {
-      await launchUrl(webUrl, mode: LaunchMode.externalApplication);
-    } else {
-      debugPrint("Could not open Facebook profile");
-    }
-  }
-
   Future<void> _launchLinkedInProfile(String username) async {
     final nativeUrl = Uri.parse('Linkedin://user?username=$username');
-    final webUrl = Uri.parse('https://www.linkedin.com/in/stephy-rn/');
+    final webUrl = Uri.parse(kLinkedInUrl);
 
     if (await canLaunchUrl(nativeUrl)) {
       await launchUrl(nativeUrl, mode: LaunchMode.externalApplication);
@@ -1344,7 +1539,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
             style:
                 TextStyle(color: Colors.white70, fontSize: isMobile ? 13 : 15)),
         Text(
-          'mail2stephyrn.as@gmail.com',
+          kEmail,
           style: TextStyle(color: Colors.white, fontSize: isMobile ? 14 : 16),
         ),
         SizedBox(height: isMobile ? 12 : 16),
@@ -1352,7 +1547,7 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
             style:
                 TextStyle(color: Colors.white70, fontSize: isMobile ? 13 : 15)),
         Text(
-          '+91 7907761417',
+          kPhone,
           style: TextStyle(color: Colors.white, fontSize: isMobile ? 14 : 16),
         ),
         SizedBox(height: isMobile ? 16 : 24),
@@ -1372,12 +1567,22 @@ class _MyPortfolioHomeState extends State<MyPortfolioHome>
               ),
             ),
             SizedBox(width: 10),
-            GestureDetector(
-              onTap: () => _launchFacebookProfile('your_username'),
-              child: Lottie.asset(
-                'Assets/Animation/Facebook.json',
-                width: isMobile ? 50 : 70,
-                height: isMobile ? 50 : 70,
+            Tooltip(
+              message: 'GitHub',
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => launchUrl(Uri.parse(kGitHubUrl),
+                      mode: LaunchMode.externalApplication),
+                  child: SizedBox(
+                    width: isMobile ? 50 : 70,
+                    height: isMobile ? 50 : 70,
+                    child: Center(
+                      child: FaIcon(FontAwesomeIcons.github,
+                          color: Colors.white, size: isMobile ? 30 : 40),
+                    ),
+                  ),
+                ),
               ),
             ),
             SizedBox(width: 10),
@@ -1450,56 +1655,58 @@ class ProjectDetail extends StatelessWidget {
                 fontSize: isMobile ? 13 : 14,
               ),
             ),
-            SizedBox(height: isMobile ? 20 : 30),
-            Text(
-              'Screenshots:',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: isMobile ? 18 : 20,
-                fontWeight: FontWeight.bold,
+            if ((project['screenshots'] as List).isNotEmpty) ...[
+              SizedBox(height: isMobile ? 20 : 30),
+              Text(
+                'Screenshots:',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMobile ? 18 : 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            SizedBox(height: 16),
-            LayoutBuilder(
-              builder: (context, constraints) {
-                final crossAxisCount = isMobile
-                    ? 2
-                    : (constraints.maxWidth / 120).floor().clamp(3, 6);
-                return GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    childAspectRatio: 1.0,
-                    mainAxisSpacing: 4,
-                    crossAxisSpacing: 1,
-                  ),
-                  itemCount: project['screenshots'].length,
-                  itemBuilder: (context, index) {
-                    final imagePath = project['screenshots'][index];
-                    return GestureDetector(
-                      onTap: () => _showFullImage(context, imagePath),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          border:
-                              Border.all(color: Colors.grey[700]!, width: 1),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            imagePath,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
+              SizedBox(height: 16),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final crossAxisCount = isMobile
+                      ? 2
+                      : (constraints.maxWidth / 120).floor().clamp(3, 6);
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      childAspectRatio: 1.0,
+                      mainAxisSpacing: 4,
+                      crossAxisSpacing: 1,
+                    ),
+                    itemCount: project['screenshots'].length,
+                    itemBuilder: (context, index) {
+                      final imagePath = project['screenshots'][index];
+                      return GestureDetector(
+                        onTap: () => _showFullImage(context, imagePath),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border:
+                                Border.all(color: Colors.grey[700]!, width: 1),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              imagePath,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
           ],
         ),
       ),

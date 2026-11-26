@@ -15,6 +15,10 @@ class AppConstants {
   static const String instagramUrl =
       'https://www.instagram.com/stephy_rn/?next=%2F&hl=en/';
 
+  /// The 3D developer room, served at the site root. This Flutter site is
+  /// served under /classic/.
+  static const String threeDRoomUrl = '/';
+
   static const String resumePath =
       'assets/Assets/Resume/Stephy_RN_Flutter_Developer_Resume.pdf';
   static const String resumeFileName = 'Stephy_RN_Flutter_Developer_Resume.pdf';

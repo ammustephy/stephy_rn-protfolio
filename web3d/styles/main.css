@@ -64,6 +64,7 @@ body:not(.is-started) .ui { opacity: 0; pointer-events: none; }
   padding: 7px 14px; font-size: 13px; color: var(--text);
 }
 .ghost:hover { border-color: var(--accent); }
+a.ghost { text-decoration: none; white-space: nowrap; }
 
 /* ---------- side navigation (desktop) ---------- */
 #tour-nav {

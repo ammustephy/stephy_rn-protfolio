@@ -9,6 +9,10 @@ class LinkService {
   Future<bool> openUrl(String url) =>
       launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
 
+  /// Opens [url] in the current tab (used for links within this website).
+  Future<bool> openInSameTab(String url) =>
+      launchUrl(Uri.parse(url), webOnlyWindowName: '_self');
+
   /// Tries the native app link first (e.g. `instagram://`) and falls back to
   /// the website.
   Future<void> openApp({required String appUrl, required String webUrl}) async {

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/platform/browser_actions.dart' as browser;
+import '../../../core/services/link_service.dart';
 import '../../../data/repositories/portfolio_repository.dart';
 
 /// The page sections, in the order they appear.
@@ -20,12 +21,16 @@ enum PortfolioSection {
 /// the resume download.
 class HomeViewModel {
   final PortfolioRepository _repository;
+  final LinkService _links;
   final Map<PortfolioSection, GlobalKey> _sectionKeys = {
     for (final section in PortfolioSection.values) section: GlobalKey(),
   };
 
-  HomeViewModel({PortfolioRepository repository = const PortfolioRepository()})
-      : _repository = repository;
+  HomeViewModel({
+    PortfolioRepository repository = const PortfolioRepository(),
+    LinkService links = const LinkService(),
+  })  : _repository = repository,
+        _links = links;
 
   String get heroGreeting => _repository.heroGreeting;
   String get heroPitch => _repository.heroPitch;
@@ -50,6 +55,9 @@ class HomeViewModel {
       curve: Curves.easeInOut,
     );
   }
+
+  /// Goes back to the 3D developer room (the site's main page).
+  void openThreeDRoom() => _links.openInSameTab(AppConstants.threeDRoomUrl);
 
   void downloadResume() => browser.downloadResume(
       AppConstants.resumePath, AppConstants.resumeFileName);

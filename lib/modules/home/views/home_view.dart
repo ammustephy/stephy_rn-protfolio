@@ -78,6 +78,15 @@ class _HomeViewState extends State<HomeView> {
           NavLink(label: section.label, onTap: () => _home.scrollTo(section)),
           const SizedBox(width: 12),
         ],
+        OutlinedButton.icon(
+          onPressed: _home.openThreeDRoom,
+          icon: const Icon(Icons.view_in_ar, color: Colors.white, size: 18),
+          label: const Text('3D Room', style: TextStyle(color: Colors.white)),
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: Colors.indigo.shade300),
+          ),
+        ),
+        const SizedBox(width: 12),
         ElevatedButton(
           onPressed: () => _home.scrollTo(PortfolioSection.contact),
           style:
@@ -117,6 +126,11 @@ class _MobileDrawer extends StatelessWidget {
                 viewModel.scrollTo(section);
               },
             ),
+          ListTile(
+            leading: const Icon(Icons.view_in_ar, color: Colors.white),
+            title: const Text('3D Room', style: TextStyle(color: Colors.white)),
+            onTap: viewModel.openThreeDRoom,
+          ),
         ],
       ),
     );

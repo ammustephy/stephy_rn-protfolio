@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stephy R N — Flutter Developer | 3D portfolio</title>
+<meta name="description" content="Stephy R N, Flutter Developer in Thiruvananthapuram, Kerala, India. 1.5+ years building production Android and iOS apps with Flutter, Dart, GetX, BLoC, REST APIs, Firebase and Google Maps. Walk through her 3D developer room.">
+<meta name="author" content="Stephy R N">
+<meta name="theme-color" content="#0b0a10">
+<meta name="color-scheme" content="dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stephy R N — Flutter Developer">
+<meta property="og:description" content="1.5+ years building production Android & iOS apps with Flutter. Explore the 3D developer room: skills, experience, projects and contact.">
+<meta property="og:image" content="assets/projects/portfolio/thumbs/cover.jpg">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stephy R N — Flutter Developer">
+<meta name="twitter:description" content="1.5+ years building production Android & iOS apps with Flutter.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1c33'/%3E%3Cpath d='M22 20 10 32l12 12M42 20l12 12-12 12M36 14 28 50' stroke='%23ffb35c' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Stephy R N",
+  "jobTitle": "Flutter Developer",
+  "email": "mailto:mail2stephyrn@gmail.com",
+  "telephone": "+91 7907761417",
+  "address": { "@type": "PostalAddress", "addressLocality": "Thiruvananthapuram", "addressRegion": "Kerala", "addressCountry": "IN" },
+  "worksFor": { "@type": "Organization", "name": "Sigosoft Private Ltd." },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Kerala" },
+  "sameAs": ["https://github.com/ammustephy", "https://www.linkedin.com/in/stephy-rn/"],
+  "knowsAbout": ["Flutter", "Dart", "GetX", "BLoC", "Provider", "REST APIs", "Firebase", "Google Maps", "Localization (i18n) & RTL"]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="styles/main.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" crossorigin>
+<script type="module" src="src/main.js"></script>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<header id="topbar" class="ui">
+  <a class="brand" href="#home" aria-label="Stephy R N, Flutter Developer: go to Home">
+    <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+    <span class="brand-text"><strong>Stephy R N</strong><small>Flutter Developer</small></span>
+  </a>
+  <p id="stop-label" aria-hidden="true"></p>
+  <button type="button" id="text-toggle" class="ghost" aria-pressed="false">Text version</button>
+</header>
+
+<nav id="tour-nav" class="ui" aria-label="Sections">
+  <button type="button" id="btn-prev" class="step-btn" aria-label="Previous section"><span aria-hidden="true">↑</span><span class="word"> Back</span></button>
+  <ol id="dots"></ol>
+  <button type="button" id="btn-next" class="step-btn" aria-label="Next section"><span class="word">Next </span><span aria-hidden="true">↓</span></button>
+</nav>
+
+<div id="bottombar" class="ui">
+  <p id="hint" hidden><span class="hint-desk">Press <kbd>Enter</kbd>, scroll or use <kbd>↑</kbd> <kbd>↓</kbd> to explore</span><span class="hint-touch">Swipe up or tap <strong>Next</strong> to explore</span></p>
+  <div id="actions" role="group" hidden></div>
+</div>
+<div id="announcer" class="visually-hidden" aria-live="polite"></div>
+
+<div id="loader">
+  <div class="loader-card">
+    <p class="loader-kicker">Developer room</p>
+    <h1 class="loader-title">Stephy R N</h1>
+    <p class="loader-role">Flutter Developer · Android &amp; iOS</p>
+    <div class="loader-track" role="progressbar" aria-label="Loading the 3D room" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i id="loader-bar"></i></div>
+    <p id="loader-status" aria-live="polite">Starting…</p>
+    <button type="button" id="loader-enter" disabled>Enter</button>
+    <p class="loader-tip">Scroll, swipe or use the arrow keys to move between sections.</p>
+  </div>
+</div>
+
+<div id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-panel" tabindex="-1">
+    <button type="button" id="modal-close" class="icon-btn" aria-label="Close details">✕</button>
+    <div id="modal-body"></div>
+  </div>
+  <div id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Screenshot viewer">
+    <button type="button" id="lb-close" class="icon-btn" aria-label="Close screenshot">✕</button>
+    <button type="button" id="lb-prev" class="icon-btn lb-arrow" aria-label="Previous screenshot">‹</button>
+    <figure><img id="lb-img" alt=""><figcaption id="lb-count"></figcaption></figure>
+    <button type="button" id="lb-next" class="icon-btn lb-arrow" aria-label="Next screenshot">›</button>
+  </div>
+</div>
+
+<div id="plain" class="visually-hidden">
+  <p id="fallback-note" class="fallback-note"></p>
+  <main id="fulltext">
+<!-- FULLTEXT:START (generated from src/data/content.js; rebuilt at runtime) -->
+<header>
+  <h1>Stephy R N — Flutter Developer</h1>
+  <p>1.5+ years building production Android &amp; iOS apps with Flutter</p>
+</header>
+<section id="ft-about" aria-labelledby="ft-about-h">
+  <h2 id="ft-about-h">About</h2>
+  <p>Flutter Developer with 1.5+ years of experience building cross-platform mobile applications for Android and iOS using Flutter and Dart. Skilled in REST API integration (Dio, HTTP), Firebase, state management (GetX, BLoC, Provider), Clean Architecture and MVVM. Experienced in Google Maps and live tracking, payment gateway integration, localization in English, French and Arabic (RTL), Figma-to-Flutter UI development, Google Play Store releases and AI-assisted development using Claude Code, Cursor and Antigravity.</p>
+</section>
+<section id="ft-skills" aria-labelledby="ft-skills-h">
+  <h2 id="ft-skills-h">Skills</h2>
+  <h3>Mobile &amp; languages</h3><ul class="ft-chips"><li>Flutter</li><li>Dart</li><li>JavaScript</li><li>Responsive UI</li></ul>
+  <h3>State &amp; architecture</h3><ul class="ft-chips"><li>GetX</li><li>BLoC</li><li>Provider</li><li>Clean Architecture</li><li>MVVM</li></ul>
+  <h3>APIs &amp; networking</h3><ul class="ft-chips"><li>RESTful APIs</li><li>Dio</li><li>HTTP</li><li>JSON</li><li>WebSocket</li></ul>
+  <h3>Data &amp; backend</h3><ul class="ft-chips"><li>Firebase</li><li>Cloud Firestore</li><li>Hive</li><li>SQLite</li><li>MySQL</li><li>MongoDB</li><li>Node.js</li><li>Express.js</li></ul>
+  <h3>Maps, payments &amp; i18n</h3><ul class="ft-chips"><li>Google Maps</li><li>Geolocation &amp; Live Tracking</li><li>Payment Gateway Integration</li><li>Localization (i18n) &amp; RTL</li></ul>
+  <h3>Tools</h3><ul class="ft-chips"><li>Git &amp; GitHub</li><li>Figma</li><li>Postman</li><li>Android Studio</li><li>VS Code</li><li>Google Play Console</li></ul>
+  <h3>AI-assisted development</h3><ul class="ft-chips"><li>Claude Code</li><li>Cursor</li><li>Google Antigravity</li></ul>
+</section>
+<section id="ft-experience" aria-labelledby="ft-exp-h">
+  <h2 id="ft-exp-h">Experience</h2>
+  <article><h3>Flutter Developer</h3><p>Sigosoft Private Ltd., Kerala, India · January 2026 – Present</p><ul><li>Develop and maintain multiple production Flutter applications for Android and iOS using Dart, GetX and Clean Architecture.</li><li>Built a multi-vendor delivery partner app supporting 9 business types (restaurant, grocery, pharmacy, local store, water, gas, laundry, car wash and home cleaning) from a single codebase.</li><li>Implemented localization (i18n) in English, French and Arabic, including full right-to-left (RTL) layout support.</li><li>Integrated RESTful APIs using Dio with token-based authentication and centralized error handling.</li><li>Implemented Google Maps, geolocation and real-time live order tracking.</li><li>Integrated payment gateways and secure payment processing workflows.</li><li>Converted Figma designs into responsive, pixel-accurate Flutter UI with reusable widgets.</li><li>Used AI coding tools (Claude Code, Cursor and Google Antigravity) in daily development for feature implementation, debugging, refactoring, code review and technical documentation, while reviewing and testing all AI-generated code before release.</li><li>Shipped 10+ releases to the Google Play Store, managing app versioning and release tracks in Google Play Console.</li><li>Followed a Git feature-branch and pull-request workflow on GitHub, and documented API issues for the backend team to speed up fixes.</li></ul></article>
+  <article><h3>Associate Software Engineer – Flutter Application Development</h3><p>Kefi Tech Solutions Pvt. Ltd., Kerala, India · June 2025 – December 2025</p><ul><li>Developed hospital management and attendance management applications using Flutter and Dart.</li><li>Integrated RESTful APIs using the HTTP package and parsed JSON responses into model classes.</li><li>Implemented state management using Provider and BLoC for maintainable, testable code.</li><li>Designed responsive UI with reusable custom widgets for multiple screen sizes.</li><li>Tested and debugged APIs using Postman before integration.</li></ul></article>
+  <article><h3>Electronic Quality Controller</h3><p>Aptara Learnings Pvt. Ltd., Kerala, India · March 2021 – June 2025</p><ul><li>Converted DOCX documents to structured XML and validated output against quality assurance standards.</li><li>Maintained high accuracy and consistency across deliverables and contributed to process improvements.</li></ul></article>
+</section>
+<section id="ft-projects" aria-labelledby="ft-proj-h">
+  <h2 id="ft-proj-h">Projects</h2>
+  <article><h3>WallFlow</h3><p>This project is a full-stack wallpaper application built using Flutter for the frontend and Node.js with Express.js for the backend. It allows users to securely register and log in, explore different wallpaper categories, search for wallpapers, add them to favorites, and download or set them easily on their devices. The app uses RESTful APIs to connect the frontend and backend, ensuring smooth communication and efficient data management. With a responsive design and user-friendly interface, the application provides a simple and enjoyable wallpaper browsing experience.</p><h4>Key features</h4><ul><li>Secure user authentication system with login and registration functionality</li><li>Add wallpapers to favourites for quick access and personalized collections</li><li>Download and directly set wallpapers to the device with one-tap convenience</li><li>Advanced search functionality to browse, download, and set wallpapers across all categories (e.g., nature, abstract, landscapes, and more)</li><li>RESTful API Integration with Node.js backend for scalable data management</li><li>HTTP package integration for seamless communication between Flutter frontend and backend services</li><li>Responsive UI design with thorough testing for optimal performance across devices</li></ul><p><strong>Tech stack:</strong> Flutter, Dart, Node.js, Express.js, REST APIs, HTTP Package</p></article>
+  <article><h3>Educk</h3><p>Educk is a Flutter-based attendance and academic management system designed to simplify communication and data management between students and teachers. The application uses Firebase services to handle authentication, real-time database updates, and messaging. It allows users to track attendance, manage marks and academic records, and communicate instantly through a built-in chat system. With a clean and responsive design, Educk provides a smooth and user-friendly academic management experience.</p><h4>Key features</h4><ul><li>Role-based authentication with admin approval workflow for student and teacher registration</li><li>Real-time Chat facility enabling live communication between students and teachers, powered by WebSocket connections for instant messaging and notifications</li><li>Complete CRUD operations for managing academic data including marks, notes, timetables, and syllabuses</li><li>Swipe-based attendance marking system for intuitive user interaction</li><li>Profile management with customizable Dark theme support</li><li>BLoC state management for efficient handling of complex data states and real-time Firestore updates</li><li>JSON serialization for seamless data exchange and Firebase integration, ensuring efficient API payloads and offline syncing capabilities</li><li>Responsive UI design with thorough testing for optimal performance across devices</li></ul><p><strong>Tech stack:</strong> Flutter, Dart, Firebase (Authentication, Firestore, Cloud Messaging), BLoC, WebSocket (via Firebase Realtime Database), JSON</p></article>
+  <article><h3>KDC Hospital Management</h3><p>KDCH is a comprehensive mobile hospital management application designed to bridge the gap between patients and healthcare services. This all-in-one platform empowers patients with seamless access to medical records, appointment scheduling, prescription management, and hospital services directly from their smartphones. By digitizing traditional hospital interactions, KDCH eliminates the need for physical visits for routine tasks, reduces waiting times, and provides patients with greater control over their healthcare journey. The application features an intuitive interface with secure login, personalized profiles, and easy navigation, making quality healthcare access.</p><h4>Key features</h4><ul><li>Secure User Authentication – Safe login and registration system to protect patient information.</li><li>Personalized Patient Profiles – Manage personal details, medical history, and preferences in one place.</li><li>Online Appointment Scheduling – Book, reschedule, or cancel appointments directly through the app.</li><li>Digital Medical Records Access – View lab reports, diagnoses, and treatment history anytime.</li><li>Prescription Management – Access and track prescribed medications and dosage details digitally.</li><li>Notifications &amp; Reminders – Get real-time alerts for appointments, prescriptions, and hospital updates.</li><li>Hospital Services Directory – Explore departments, doctors, and available medical services.</li><li>User-Friendly Interface – Simple, intuitive, and responsive design for smooth navigation.</li><li>Data Security &amp; Privacy – Secure backend integration to ensure confidentiality of medical data.</li></ul><p><strong>Tech stack:</strong> Flutter, Dart, Node.js, Express.js, Firebase Firestore, BLoC, GitHub</p></article>
+  <article><h3>Portfolio website</h3><p>My portfolio website is a sleek, professionally designed digital showcase that presents the work and capabilities of a talented Flutter developer based in Thiruvananthapuram, Kerala, India. This modern portfolio serves as a comprehensive platform for potential clients, collaborators, and employers to explore Stephy's technical expertise, professional journey, and project accomplishments. With its minimalist black-themed interface and intuitive navigation, the website effectively communicates Stephy's identity as a versatile cross-platform developer specializing in Flutter, while also highlighting a unique background that bridges both software development and quality assurance. The portfolio demonstrates not only technical proficiency across multiple platforms—Android, iOS, Web, and Desktop—but also showcases a diverse skill set that includes programming languages like Dart and Kotlin, API integration, quality assurance methodologies, and front-end development technologies.</p><h4>Key features</h4><ul><li>Modern &amp; Minimalist Design – Sleek black-themed interface with a clean and professional layout.</li><li>Responsive Cross-Platform UI – Optimized for desktop, tablet, and mobile devices to ensure a smooth browsing experience.</li><li>About &amp; Professional Summary Section – Highlights technical expertise, career journey, and specialization in Flutter development.</li><li>Projects Showcase – Displays detailed project descriptions with technologies used and key contributions.</li><li>Skills &amp; Technology Stack Display – Clearly presents programming languages, frameworks, tools, and QA expertise.</li><li>Cross-Platform Development Focus – Emphasizes experience in building Android, iOS, Web, and Desktop applications using Flutter.</li></ul><p><strong>Tech stack:</strong> Flutter, Dart, GitHub</p></article>
+</section>
+<section id="ft-education" aria-labelledby="ft-edu-h">
+  <h2 id="ft-edu-h">Education</h2>
+  <ul><li><strong>Bachelor of Technology (B.Tech) in Computer Science</strong> — University of Kerala, 2021 — CGPA: 7.0 / 10</li><li><strong>Flutter / Mobile Application Development</strong> — Luminar Technolab, 2024</li></ul>
+</section>
+<section id="ft-contact" aria-labelledby="ft-contact-h">
+  <h2 id="ft-contact-h">Contact</h2>
+  <p>Feel free to reach out for collaborations, freelance work, or just a friendly hello!</p>
+  <ul>
+    <li>Email: <a href="mailto:mail2stephyrn@gmail.com">mail2stephyrn@gmail.com</a></li>
+    <li>Mobile: <a href="tel:+917907761417">+91 7907761417</a></li>
+    <li>Location: Thiruvananthapuram, Kerala, India</li>
+    <li><a href="https://github.com/ammustephy?tab=repositories" rel="noopener" target="_blank">GitHub</a></li>
+    <li><a href="https://www.linkedin.com/in/stephy-rn/" rel="noopener" target="_blank">LinkedIn</a></li>
+    <li><a href="assets/resume/stephy-rn-flutter-developer-resume.pdf" download="">Download resume (PDF)</a></li>
+  </ul>
+</section>
+<!-- FULLTEXT:END -->
+  </main>
+</div>
+
+<noscript>
+  <style>#plain{position:static!important;width:auto!important;height:auto!important;clip:auto!important;overflow:visible!important;margin:0!important}
+  #gl,.ui,#loader{display:none!important}html,body{overflow:auto!important;height:auto!important}</style>
+  <p class="fallback-note">JavaScript is off, so here is the plain version of the portfolio.</p>
+</noscript>
+</body>
+</html>

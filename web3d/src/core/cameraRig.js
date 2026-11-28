@@ -69,7 +69,7 @@ export class CameraRig {
     this.pos.copy(pos); this.look.copy(look);
   }
 
-  _onChange({ stop, instant }) {
+  _onChange({ stop, instant, from: fromIndex }) {
     const target = this._solve(this.opts.shotFor(stop.id));
     if (instant || this.opts.reducedMotion) {
       this.tween = null;
@@ -79,10 +79,17 @@ export class CameraRig {
     }
     const from = { pos: this.pos.clone(), look: this.look.clone() };
     const d = from.pos.distanceTo(target.pos);
-    // bend the path towards the middle of the room
-    const mid = from.pos.clone().lerp(target.pos, 0.5);
-    const safe = new THREE.Vector3(0.6, 1.75, 0.6);
-    const ctrl = mid.clone().lerp(safe, Math.min(0.65, d / 10));
+    let ctrl;
+    if (this.opts.pathControl) {
+      // the theme decides how the path bends (e.g. the phone theme flies through the screen)
+      const fromStop = this.tour.stops[fromIndex];
+      ctrl = this.opts.pathControl(from.pos, target.pos, fromStop ? fromStop.id : null, stop.id);
+    } else {
+      // bend the path towards the middle of the room
+      const mid = from.pos.clone().lerp(target.pos, 0.5);
+      const safe = new THREE.Vector3(0.6, 1.75, 0.6);
+      ctrl = mid.clone().lerp(safe, Math.min(0.65, d / 10));
+    }
     this.tween = { from, target, ctrl, t: 0, dur: THREE.MathUtils.clamp(1.35 + d * 0.045, 1.4, 1.8) };
   }
 
@@ -100,12 +107,17 @@ export class CameraRig {
       tw.t = Math.min(1, tw.t + dt / tw.dur);
       const t = tw.t, e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; // easeInOutCubic
       const a = tw.from.pos, b = tw.target.pos, c = tw.ctrl;
-      const u = 1 - e;
-      this.pos.set(
-        u * u * a.x + 2 * u * e * c.x + e * e * b.x,
-        u * u * a.y + 2 * u * e * c.y + e * e * b.y,
-        u * u * a.z + 2 * u * e * c.z + e * e * b.z,
-      );
+      if (c.curve) {
+        // a theme-supplied path (e.g. through the phone's screen), travelled at even speed
+        c.curve.getPointAt(e, this.pos);
+      } else {
+        const u = 1 - e;
+        this.pos.set(
+          u * u * a.x + 2 * u * e * c.x + e * e * b.x,
+          u * u * a.y + 2 * u * e * c.y + e * e * b.y,
+          u * u * a.z + 2 * u * e * c.z + e * e * b.z,
+        );
+      }
       this.look.lerpVectors(tw.from.look, tw.target.look, e);
       if (t >= 1) { this.tween = null; this.tour.arrive(); }
     }

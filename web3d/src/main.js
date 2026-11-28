@@ -10,6 +10,7 @@ import { buildModal } from './views/ui/modal.js';
 import { buildLoader } from './views/ui/loader.js';
 import { buildActions } from './views/ui/actions.js';
 import { bindInput } from './core/input.js';
+import { themeFromUrl, loadTheme } from './views/scene/themes/index.js';
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -63,12 +64,24 @@ function openLink(region) {
 async function main() {
   document.getElementById('fulltext').innerHTML = renderFullText(content);
 
-  // "Text version" toggle: shows the plain HTML page instead of the room
+  // 3D world: "phone" by default, the original room only with ?theme=room (see views/scene/themes/index.js)
+  const themeName = themeFromUrl();
+  document.documentElement.dataset.theme = themeName;
+  const themePromise = loadTheme(themeName).catch((err) => ({ error: err }));
+  const meta = themeName === 'room'
+    ? { kicker: 'Developer room', loading: 'Loading the 3D room', viewLabel: '3D room' }
+    : { kicker: 'Inside a phone', loading: 'Loading the 3D portfolio', viewLabel: '3D view' };
+  const kicker = document.querySelector('.loader-kicker');
+  if (kicker) kicker.textContent = meta.kicker;
+  const bar = document.querySelector('#loader [role="progressbar"]');
+  if (bar) bar.setAttribute('aria-label', meta.loading);
+
+  // "Text version" toggle: shows the plain HTML page instead of the 3D view
   const toggle = document.getElementById('text-toggle');
   toggle.addEventListener('click', () => {
     const on = document.documentElement.classList.toggle('show-text');
     toggle.setAttribute('aria-pressed', String(on));
-    toggle.textContent = on ? '3D room' : 'Text version';
+    toggle.textContent = on ? meta.viewLabel : 'Text version';
     window.scrollTo(0, 0);
   });
 
@@ -87,15 +100,17 @@ async function main() {
   // Bloom costs ~3x the frame time on integrated GPUs (measured on Intel UHD), so it is opt-in: ?bloom=1
   const quality = { phone, bloom: !phone && params.get('bloom') === '1' };
 
-  let scene;
+  let scene, themeMeta;
   try {
-    const { SceneView } = await import('./views/scene/sceneView.js');
+    const mod = await themePromise;
+    if (mod.error) throw mod.error;
+    themeMeta = mod.meta;
     const canvas = document.getElementById('gl');
-    scene = new SceneView(canvas, quality);
+    scene = new mod.Theme(canvas, quality);
     await scene.build(content, (p, t) => loader.progress(p, t));
   } catch (err) {
-    console.warn('3D room could not be built:', err);
-    showPlainVersion('The 3D room could not load (no connection to the 3D library?), so here is the plain version.');
+    console.warn('3D view could not be built:', err);
+    showPlainVersion((themeMeta && themeMeta.failNote) || 'The 3D view could not load (no connection to the 3D library?), so here is the plain version.');
     return;
   }
 
@@ -108,7 +123,9 @@ async function main() {
     insets,
     reducedMotion,
     bounds: scene.cameraBounds,
+    pathControl: scene.pathControl ? (a, b, fromId, toId) => scene.pathControl(a, b, fromId, toId) : null,
   });
+  if (scene.attach) scene.attach({ tour, rig, reducedMotion });
 
   const picking = new Picking(document.getElementById('gl'), scene.camera, {
     getTargets: () => scene.clickables,
@@ -137,8 +154,9 @@ async function main() {
   });
 
   // render loop
-  let last = performance.now(), time = 0;
+  let last = performance.now(), time = 0, running = true;
   const frame = (now) => {
+    if (!running) return;
     const raw = (now - last) / 1000; last = now;
     const dt = Math.min(0.05, raw);
     time += dt;
@@ -149,7 +167,9 @@ async function main() {
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
-  window.__room = { tour, detail, scene }; // handy for debugging in the console
+  window.__room = { tour, detail, scene, theme: themeName }; // handy for debugging in the console
+  // teardown: stop the loop and free GPU memory when the page is really unloaded (not when it goes into the back/forward cache)
+  window.addEventListener('pagehide', (e) => { if (e.persisted || !scene.dispose) return; running = false; scene.dispose(); });
 
   loader.ready();
 

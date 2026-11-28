@@ -1,6 +1,11 @@
-# Stephy R N — 3D developer room
+# Stephy R N — 3D portfolio
 
-A portfolio you walk through as a guided tour of a developer's room at dusk in Kerala.
+A portfolio you walk through as a guided tour. It has two 3D themes that share all content, navigation and UI:
+
+- **Inside a phone** (default): a giant floating smartphone with her name on the home screen; the camera flies into the
+  screen, into a pastel world of rounded app icons, and every section is an app that opens on a pedestal.
+- **Developer room**: the original developer's room at dusk in Kerala. Not linked anywhere; open it with `?theme=room`.
+
 Plain browser ES modules + [three.js 0.160](https://threejs.org) from the jsDelivr CDN.
 **No build step, no npm.**
 
@@ -22,9 +27,11 @@ Useful URLs while working:
 | --- | --- |
 | `/#skills` | Deep link: skips the loader and jumps straight to a stop (`home`, `about`, `skills`, `experience`, `projects`, `education`, `contact`). The hash follows the tour. |
 | `/#projects&open=wallflow` | Also opens a detail modal (project id or job id: `sigosoft`, `kefi`, `aptara`). Add `&img=0` to open the screenshot viewer. |
+| `/?theme=room` | The developer-room theme (hidden: not linked in the UI). Combine with deep links: `/?theme=room#skills`. |
+| `/?theme=phone` | The "Inside a phone" theme explicitly (same as no parameter; unknown values also fall back to it). |
 | `/?bloom=1` | Turns on the bloom post-process (off by default: on an Intel UHD laptop GPU it tripled the frame time). |
 
-In the console, `window.__room` exposes `{tour, detail, scene}` for debugging.
+In the console, `window.__room` exposes `{tour, detail, scene, theme}` for debugging (the name is historical; it is there for both themes).
 
 ## How the tour works
 
@@ -37,6 +44,36 @@ Each stop's camera framing comes from an **anchor** (centre, facing direction, s
 distance is computed from the screen aspect and from the area the overlay leaves free, so the same stop fits 1920×1080, 1280×800 and a
 375×812 phone. On portrait phones the boards are rebuilt in a **narrow layout** (taller boards, bigger text, cards stacked, the contact page
 on the phone instead of the laptop).
+
+## Themes
+
+`src/views/scene/themes/index.js` reads `?theme=` (`phone` by default, `room` only when asked for; anything else falls back to
+`phone`) and loads just that theme's module, so a visitor never downloads the other one. Both themes implement the same small
+interface that `main.js`, the camera rig and picking use: `build(content, onProgress)`, `shotFor(stopId)` (camera framing),
+`introShot()`, `clickables` (jobs, projects, contact links), `setContactHover(id)`, `modeForViewport()` / `setLayout(mode)` (wide or
+portrait-phone layout), `update(time)`, `render()`, `resize()` and `dispose()`. A theme may also bend the camera path
+(`pathControl`) and listen to the tour (`attach`). Everything else (content, models, viewmodels, input, modal, nav, loader, plain-text
+version) is shared.
+
+**Room** (`themes/room/index.js`): a thin adapter over the original `sceneView.js` and the files it builds from; the room code is untouched.
+
+**Inside a phone** (`themes/phone/`):
+
+| Stop | What you see |
+| --- | --- |
+| Home | A large floating smartphone (aluminium frame, glass that reflects the environment, dynamic island, side buttons, camera bump) in a pastel sky, with floating app icons. Its home screen shows the name widget and the six apps. |
+| → About | The camera flies through the screen (it passes the glass with a short fade) into the app world: a pastel grid floor and 190 rounded app icons (instanced) that bob gently. |
+| About | Profile app: avatar, name, role, tagline and the full summary. |
+| Skills | Skills app: all 35 skills as chips in their 7 groups. |
+| Experience | Timeline app with the three jobs; each card opens the job modal. |
+| Projects | Store-like app with the four projects and their cover screenshots; each card opens the project modal with the gallery. |
+| Education | Wallet app with the degree and the course as two passes. |
+| Contact | Mail app: email (mailto), mobile (tel), location, GitHub, LinkedIn and Download resume, all clickable with a hover highlight. |
+
+Each later stop is a big app on a pedestal that opens into its window as the camera arrives (and closes when it leaves). The windows are
+drawn on canvas (`apps.js`) at 120 texture pixels per unit, and redrawn in a portrait layout on phones (taller windows, stacked cards,
+bigger text). Files: `index.js` (theme class, framing, camera path, opening), `device.js` (the phone), `world.js` (sky, floor, icon
+field, pedestals), `apps.js` (app UIs and the home screen), `glyphs.js` (icon glyphs).
 
 ## Structure (MVVM, like the Flutter app)
 
@@ -55,19 +92,23 @@ web3d/
     core/
       events.js           tiny emitter
       input.js            wheel / touch / keys → TourViewModel
-      cameraRig.js        stop framing (anchor → camera) + eased tween along a curved path
+      cameraRig.js        stop framing (anchor → camera) + eased tween along a curved path (a theme can supply the path)
       picking.js          raycast hover (pointer cursor + lift) and click (ignores drags)
     views/
       scene/
-        sceneView.js      builds the room, per-layout boards, camera shots
-        renderer.js       WebGLRenderer (sRGB, ACES Filmic, PCF soft shadows), PMREM RoomEnvironment, optional bloom
+        themes/
+          index.js        theme selection (?theme=phone|room, default phone) and lazy loading
+          room/index.js   adapter: the developer room (sceneView.js below) as a theme
+          phone/          "Inside a phone": index.js, device.js, world.js, apps.js, glyphs.js
+        sceneView.js      builds the room, per-layout boards, camera shots (room theme)
+        renderer.js       WebGLRenderer (sRGB, ACES Filmic, PCF soft shadows), PMREM RoomEnvironment, optional bloom (both themes)
         lighting.js       hemisphere fill + cool dusk light through the window (shadows)
         room.js           floor, walls with a real window opening, ceiling, skirting, cornice
         layout.js         room size and every board position, for 'wide' and 'narrow'
         materials.js      shared PBR materials
         textures.js       procedural canvas textures (planks, walnut, oak, cork, rug, wall paint, fabric, glow, steam)
-        canvasText.js     text-to-texture helpers (wrap, shrink-to-fit, chips)
-        geometry.js       rounded boxes / planes (cached), seeded random
+        canvasText.js     text-to-texture helpers (wrap, shrink-to-fit, chips) (both themes)
+        geometry.js       rounded boxes / planes (cached), seeded random (both themes)
         props/            desk (monitor, keyboard, mouse, laptop, phone, headphones, arm lamp, mug + steam, chair),
                           window (dusk sky, palms, curtains), shelf (books), plants, decor (rug, beanbag, sideboard with
                           brass oil lamp, pendant, sconces, real-time clock, neon "</>", fairy lights)
@@ -107,3 +148,7 @@ The 3D frames use `thumbs/cover.jpg`.
 - Geometries and materials are cached and shared; books, keycaps, leaves and fairy lights are instanced.
 - Bloom is opt-in (`?bloom=1`) and never used on phones.
 - Measured on an Intel UHD (i5 laptop) at 1280×800, DPR 1.25: about 9 ms per frame without bloom.
+- Phone theme: same DPR caps; no shadow maps at all (contact shadows are soft textures); the 190 background icons are three
+  instanced meshes (bodies, glyphs from one 4 × 4 texture atlas, shadows); only the open app window is clickable and visible. Not
+  yet measured on the Intel UHD laptop.
+- Each theme has a `dispose()` that frees its geometries, materials, textures and the WebGL context (called when the page is unloaded).
